@@ -10,17 +10,28 @@ jobs:
         uses: cachix/install-nix-action@v30
         with:
           nix_path: nixpkgs=channel:nixos-24.05
+
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: "22"
+
       - name: Install Python & Cargo
         run: |
           nix run nixpkgs#python3 -- --version
           sudo apt update
           sudo apt install -y python3-pip cargo
+
       - name: Test scanner
-        run: npm link && pacdex
+        run: |
+          npm link
+          pacdex | tee pacdex_output_linux.txt
+
+      - name: Upload Pacdex Output
+        uses: actions/upload-artifact@v4
+        with:
+          name: pacdex-output-linux
+          path: pacdex_output_linux.txt
 
   test-mac:
     runs-on: macos-latest
@@ -29,11 +40,21 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "22"
+
       - name: Install Python & Cargo
         run: |
           brew install python rust
+
       - name: Test scanner
-        run: npm link && pacdex
+        run: |
+          npm link
+          pacdex | tee pacdex_output_mac.txt
+
+      - name: Upload Pacdex Output
+        uses: actions/upload-artifact@v4
+        with:
+          name: pacdex-output-mac
+          path: pacdex_output_mac.txt
 
 #   test-windows:
 #     runs-on: windows-latest
@@ -47,4 +68,10 @@ jobs:
 #           choco install python cargo -y
 #       - name: Test Windows scanner
 #         shell: pwsh
-#         run: node .\src\scanners\scan_windows.js
+#         run: |
+#           node .\src\scanners\scan_windows.js | Tee-Object -FilePath pacdex_output_windows.txt
+#       - name: Upload Pacdex Output
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: pacdex-output-windows
+#           path: pacdex_output_windows.txt
