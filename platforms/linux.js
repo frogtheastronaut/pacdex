@@ -21,6 +21,7 @@ function parsePip(output) {
 function parseApt(output) {
   return output
     .split("\n")
+    .slice(1)
     .filter(line => line.trim() !== "")
     .map(line => line.split("/")[0]); // remove architecture info
 }

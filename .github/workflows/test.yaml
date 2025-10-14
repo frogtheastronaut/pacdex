@@ -26,7 +26,7 @@ jobs:
           node-version: "22"
       - name: Install Python & Cargo
         run: |
-          brew install python cargo
+          brew install python rust
       - name: Test scanner
         run: npm link && statdex
 
