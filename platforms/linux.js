@@ -10,7 +10,7 @@ function parseNpm(output) {
 function parsePip(output) {
   return output
     .split("\n")
-    .slice(2)           // skip headers
+    .slice(2)
     .map(line => line.split(/\s+/)[0])
     .filter(Boolean);
 }
@@ -20,7 +20,7 @@ function parseApt(output) {
     .split("\n")
     .slice(1)
     .filter(line => line.trim() !== "")
-    .map(line => line.split("/")[0]); // remove architecture info
+    .map(line => line.split("/")[0]);
 }
 
 function parsePacman(output) {
@@ -37,22 +37,35 @@ function parseDnf(output) {
     .map(line => line.split(".")[0]);
 }
 
+function parseNix(output) {
+  return output
+    .split("\n")
+    .filter(line => line.trim() !== "" && !line.startsWith("Profile") && !line.startsWith("warning:"))
+    .map(line => line.split(" ")[0].trim());
+}
+
 function scanPackageManagers() {
   const result = {};
 
-  // Node
+  // npm
   if (run("which npm")) result.npm = parseNpm(run("npm list -g --depth=0"));
 
-  // Python
+  // python pip3
   if (run("which pip3")) result.pip = parsePip(run("pip3 list --format=columns"));
 
-  // Rust
-  if (run("which cargo")) result.cargo = run("cargo install --list").split("\n");
+  // cargo rust
+  if (run("which cargo")) result.cargo = run("cargo install --list").split("\n").filter(Boolean);
 
-  // Linux package managers
+  // linux package managers
   if (run("which apt")) result.apt = parseApt(run("apt list --installed"));
   if (run("which pacman")) result.pacman = parsePacman(run("pacman -Q"));
   if (run("which dnf")) result.dnf = parseDnf(run("dnf list installed"));
+
+  if (run("which nix-env")) {
+    let nixOutput = run("nix-env -q") || "";
+    if (!nixOutput.trim()) nixOutput = run("nix profile list") || "";
+    result.nix = parseNix(nixOutput);
+  }
 
   return result;
 }
@@ -60,10 +73,7 @@ function scanPackageManagers() {
 function scan_linux() {
   const data = {};
   data.os = "Linux";
-
-  // append package managers
   data.packageManagers = scanPackageManagers();
-
   return data;
 }
 

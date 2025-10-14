@@ -3,8 +3,8 @@ import { run } from "../run_cmd.js";
 function parseNpm(output) {
   return output
     .split("\n")
-	// split @ in version if exists
-	.map(line => line.split("@")[0])
+    // split @ in version if exists
+    .map(line => line.split("@")[0])
     .filter(line => line.trim().startsWith("├──") || line.trim().startsWith("└──"))
     .map(line => line.replace(/^[├└]──\s+/, "").split(" -> ")[0]); 
 }
@@ -25,6 +25,13 @@ function parsePorts(output) {
 	.map(line => line.trim().split(" ")[0]);
 }
 
+function parseNix(output) {
+  return output
+    .split("\n")
+    .filter(line => line.trim() !== "" && !line.startsWith("Profile") && !line.startsWith("warning:"))
+    .map(line => line.split(" ")[0].trim());
+}
+
 function scanPackageManagers() {
   const result = {};
 
@@ -40,6 +47,12 @@ function scanPackageManagers() {
   if (run("which brew")) result.brew = run("brew list").split("\n");
 
   if (run("which port")) result.macport = parsePorts(run("port installed"));
+
+  if (run("which nix-env")) {
+    let nixOutput = run("nix-env -q") || "";
+    if (!nixOutput.trim()) nixOutput = run("nix profile list") || "";
+    result.nix = parseNix(nixOutput);
+  }
 
   return result;
 }
