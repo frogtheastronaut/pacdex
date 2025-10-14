@@ -1,11 +1,11 @@
 {
-  "name": "statdex",
+  "name": "pacdex",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "type": "module",
   "bin": {
-    "statdex": "./index.js"
+    "pacdex": "./index.js"
   },
   "keywords": [],
   "author": "",

@@ -1,7 +1,4 @@
-import os from "os";
 import { run } from "../run_cmd.js";
-import fs from "fs";
-import path from "path";
 
 function parseNpm(output) {
   return output
@@ -63,23 +60,6 @@ function scanPackageManagers() {
 function scan_linux() {
   const data = {};
   data.os = "Linux";
-  data.shell = process.env.SHELL || "unknown";
-
-  // history: check bash/zsh
-  let hist = path.join(os.homedir(), ".bash_history");
-  if (!fs.existsSync(hist)) hist = path.join(os.homedir(), ".zsh_history");
-
-  if (fs.existsSync(hist)) {
-    const history = run(`cat ${hist} | awk '{print $1}' | sort | uniq -c | sort -nr | head -n 10`);
-    data.topCommands = history.split("\n")
-      .filter(Boolean)
-      .map(line => {
-        const [count, cmd] = line.trim().split(/\s+/, 2);
-        return { [cmd]: Number(count) };
-      });
-  } else {
-    data.topCommands = [];
-  }
 
   // append package managers
   data.packageManagers = scanPackageManagers();
