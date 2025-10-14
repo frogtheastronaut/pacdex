@@ -6,17 +6,17 @@ jobs:
   test-linux:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: cachix/install-nix-action@v31
+      - name: Install Nix
+        uses: cachix/install-nix-action@v30
         with:
-          nix_path: nixpkgs=channel:nixos-unstable
-      - run: nix-build
+          nix_path: nixpkgs=channel:nixos-24.05
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: "22"
       - name: Install Python & Cargo
         run: |
+          nix run nixpkgs#python3 -- --version
           sudo apt update
           sudo apt install -y python3-pip cargo
       - name: Test scanner
