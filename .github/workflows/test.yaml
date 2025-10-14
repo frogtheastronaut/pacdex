@@ -18,7 +18,7 @@ jobs:
 
       - name: Install Python & Cargo
         run: |
-          nix run nixpkgs#python3 -- --version
+          nix profile install nixpkgs#python3 nixpkgs#cargo nixpkgs#nodejs
           sudo apt update
           sudo apt install -y python3-pip cargo
 
