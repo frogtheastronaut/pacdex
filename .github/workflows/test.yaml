@@ -1,0 +1,45 @@
+name: StatDex Test
+
+on: [push, pull_request]
+
+jobs:
+  test-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "22"
+      - name: Install Python & Cargo
+        run: |
+          sudo apt update
+          sudo apt install -y python3-pip cargo
+      - name: Test scanner
+        run: npm link && statdex
+
+  test-mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "22"
+      - name: Install Python & Cargo
+        run: |
+          brew install python cargo
+      - name: Test scanner
+        run: npm link && statdex
+
+#   test-windows:
+#     runs-on: windows-latest
+#     steps:
+#       - uses: actions/checkout@v3
+#       - uses: actions/setup-node@v3
+#         with:
+#           node-version: "22"
+#       - name: Install Python & Cargo
+#         run: |
+#           choco install python cargo -y
+#       - name: Test Windows scanner
+#         shell: pwsh
+#         run: node .\src\scanners\scan_windows.js

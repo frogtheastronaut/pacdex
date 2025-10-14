@@ -1,0 +1,13 @@
+{
+  "name": "statdex",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "bin": {
+    "statdex": "./index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
