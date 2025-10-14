@@ -40,7 +40,12 @@ function parseDnf(output) {
 function parseNix(output) {
   return output
     .split("\n")
-    .filter(line => line.trim() !== "" && !line.startsWith("Profile") && !line.startsWith("warning:"))
+    .filter(line =>
+      line.trim() !== "" &&
+      !line.startsWith("Profile") &&
+      !line.startsWith("warning:") &&
+      !["Name:", "Flake", "Original", "Locked", "Store"].includes(line.trim())
+    )
     .map(line => line.split(" ")[0].trim());
 }
 
