@@ -4,7 +4,7 @@ function parseChoco(output) {
   return output
     .split("\n")
     .filter(line => line.trim() && !line.startsWith("Chocolatey v"))
-    .map(line => line.split(" ")[0].replace(/\u001b\[[0-9;]*m/g, ""));
+    .map(line => line.split("|")[0].replace(/\u001b\[[0-9;]*m/g, ""));
 }
 
 function parsePip(output) {
@@ -42,7 +42,7 @@ function scanPackageManagers() {
   if (run("where pip")) result.pip = parsePip(run("pip list --format=columns"));
 
   // chocolatey
-  if (run("where choco")) result.choco = parseChoco(run("choco list --local-only"));
+  if (run("where choco")) result.choco = parseChoco(run("choco list --local-only --limit-output"));
 
   // rust through cargo
   if (run("where cargo")) result.cargo = parseCargo(run("cargo install --list"));
