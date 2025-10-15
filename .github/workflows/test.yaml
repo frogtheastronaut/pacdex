@@ -40,6 +40,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "22"
+
       - name: Install Nix
         uses: cachix/install-nix-action@v30
         with:
@@ -50,16 +51,20 @@ jobs:
           nix profile install nixpkgs#python3 nixpkgs#cargo nixpkgs#nodejs
           brew install python rust
 
+      - name: Install Pacdex Locally
+        run: |
+          npm install .
+
       - name: Test scanner
         run: |
-          npm link
-          pacdex | tee pacdex_output_mac.txt
+          npx pacdex | tee pacdex_output_mac.txt
 
       - name: Upload Pacdex Output
         uses: actions/upload-artifact@v4
         with:
           name: pacdex-output-mac
           path: pacdex_output_mac.txt
+
 
 #   test-windows:
 #     runs-on: windows-latest

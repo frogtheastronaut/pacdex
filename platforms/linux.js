@@ -38,15 +38,15 @@ function parseDnf(output) {
 }
 
 function parseNix(output) {
-  return output
-    .split("\n")
-    .filter(line =>
-      line.trim() !== "" &&
-      !line.startsWith("Profile") &&
-      !line.startsWith("warning:") &&
-      !["Name:", "Flake", "Original", "Locked", "Store"].includes(line.trim())
-    )
-    .map(line => line.split(" ")[0].trim());
+  const lines = output.split("\n");
+  const packages = [];
+  for (let line of lines) {
+    if (line.startsWith("Name:")) {
+      const pkg = line.split("Name:")[1].trim();
+      if (pkg) packages.push(pkg);
+    }
+  }
+  return packages;
 }
 
 function scanPackageManagers() {
