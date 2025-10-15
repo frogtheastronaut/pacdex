@@ -3,6 +3,7 @@
 import os from "os";
 import { scan_mac } from "./platforms/mac.js";
 import { scan_linux } from "./platforms/linux.js";
+import { scan_windows } from "./platforms/windows.js";
 
 function main() {
   const platform = os.platform();
@@ -10,7 +11,7 @@ function main() {
 
   if (platform === "darwin") info = scan_mac();
   else if (platform === "linux") info = scan_linux();
-  else if (platform.startsWith("win")) info = { os: "Windows", note: "scanner not ready" };
+  else if (platform.startsWith("win")) info = scan_windows;
   else info = { os: "Unknown" };
 
   console.log(JSON.stringify(info, null, 2));
