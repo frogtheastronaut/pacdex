@@ -19,16 +19,29 @@ function main() {
   else if (platform === "win32") info = scan_windows();
   else info = { os: "Unknown/Unsupported" };
 
-  console.log(JSON.stringify(info, null, 2));
-
-  if (!skip_upload()) askUpload();
+  if (!skip_upload()) askUpload(info);
 }
-function askUpload() {
+
+function askUpload(info) {
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  
   rl.question("Upload results to Pacdex? (y/n) ", (answer) => {
-    if (answer.toLowerCase() === "y") upload(info);
-    else console.log("Skipped upload");
-    rl.close();
+    if (answer.toLowerCase() !== "y") {
+      console.log("Skipped upload");
+      rl.close();
+      return;
+    }
+
+    rl.question("Enter your Pacdex token: ", async (token) => {
+      if (!token.trim()) {
+        console.log("No token provided, skipped upload");
+        rl.close();
+        return;
+      }
+      info.token = token.trim();
+      await upload(info);
+      rl.close();
+    });
   });
 }
 
@@ -40,6 +53,8 @@ async function upload(data) {
       body: JSON.stringify(data),
     });
 
+    console.log(JSON.stringify(data, null, 2));
+
     if (!res.ok) throw new Error(`upload failed: ${res.status}`);
     const json = await res.json();
     console.log("Uploaded data!", json);
@@ -47,6 +62,5 @@ async function upload(data) {
     console.error("Upload error:", err.message);
   }
 }
-
 
 main();
