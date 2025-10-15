@@ -77,7 +77,7 @@ jobs:
       - name: Install Python
         run: choco install python -y
       - name: Install Cargo
-        run: choco install cargo -y
+        run: choco install rust -y
       - name: Install Node.js
         run: choco install nodejs -y
       - name: Refresh Environment
