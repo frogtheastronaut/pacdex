@@ -29,6 +29,7 @@ function parseNix(output) {
   const lines = output.split("\n");
   const packages = [];
   for (let line of lines) {
+    line = line.replace(/\u001b\[[0-9;]*m/g, ""); // remove ANSI codes
     if (line.startsWith("Name:")) {
       const pkg = line.split("Name:")[1].trim();
       if (pkg) packages.push(pkg);
