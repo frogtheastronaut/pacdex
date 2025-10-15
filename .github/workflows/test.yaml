@@ -49,7 +49,7 @@ jobs:
       - name: Install Python & Cargo
         run: |
           nix profile install nixpkgs#python3 nixpkgs#cargo nixpkgs#nodejs
-          brew install python rust
+          brew install python
 
       - name: Install Pacdex Locally
         run: |
@@ -66,22 +66,26 @@ jobs:
           path: pacdex_output_mac.txt
 
 
-#   test-windows:
-#     runs-on: windows-latest
-#     steps:
-#       - uses: actions/checkout@v3
-#       - uses: actions/setup-node@v3
-#         with:
-#           node-version: "22"
-#       - name: Install Python & Cargo
-#         run: |
-#           choco install python cargo -y
-#       - name: Test Windows scanner
-#         shell: pwsh
-#         run: |
-#           node .\src\scanners\scan_windows.js | Tee-Object -FilePath pacdex_output_windows.txt
-#       - name: Upload Pacdex Output
-#         uses: actions/upload-artifact@v4
-#         with:
-#           name: pacdex-output-windows
-#           path: pacdex_output_windows.txt
+
+  test-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "22"
+      - name: Install Python, Cargo, Node.js, and Chocolatey
+        run: |
+          choco install python cargo nodejs -y
+      - name: Install Pacdex Locally
+        run: |
+          npm install .
+      - name: Test scanner
+        shell: pwsh
+        run: |
+          npx pacdex | Tee-Object -FilePath pacdex_output_windows.txt
+      - name: Upload Pacdex Output
+        uses: actions/upload-artifact@v4
+        with:
+          name: pacdex-output-windows
+          path: pacdex_output_windows.txt
