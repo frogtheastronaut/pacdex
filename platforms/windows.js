@@ -59,4 +59,5 @@ function scan_windows() {
   data.packageManagers = scanPackageManagers();
   return data;
 }
+
 export { scan_windows };

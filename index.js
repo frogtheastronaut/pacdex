@@ -11,7 +11,7 @@ function main() {
 
   if (platform === "darwin") info = scan_mac();
   else if (platform === "linux") info = scan_linux();
-  else if (platform.startsWith("win")) info = scan_windows;
+  else if (platform === "win32") info = scan_windows();
   else info = { os: "Unknown" };
 
   console.log(JSON.stringify(info, null, 2));
