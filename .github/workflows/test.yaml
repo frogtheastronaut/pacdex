@@ -74,16 +74,19 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "22"
-      - name: Install Python, Cargo, Node.js, and Chocolatey
-        run: |
-          choco install python cargo nodejs -y
+      - name: Install Python
+        run: choco install python -y
+      - name: Install Cargo
+        run: choco install cargo -y
+      - name: Install Node.js
+        run: choco install nodejs -y
+      - name: Refresh Environment
+        run: refreshenv
       - name: Install Pacdex Locally
-        run: |
-          npm install .
+        run: npm install .
       - name: Test scanner
         shell: pwsh
-        run: |
-          npx pacdex | Tee-Object -FilePath pacdex_output_windows.txt
+        run: npx pacdex | Tee-Object -FilePath pacdex_output_windows.txt
       - name: Upload Pacdex Output
         uses: actions/upload-artifact@v4
         with:
