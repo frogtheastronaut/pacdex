@@ -25,7 +25,7 @@ jobs:
       - name: Test scanner
         run: |
           npm link
-          pacdex | tee pacdex_output_linux.txt
+          pacdex --no-upload | tee pacdex_output_linux.txt
 
       - name: Upload Pacdex Output
         uses: actions/upload-artifact@v4
@@ -57,7 +57,7 @@ jobs:
 
       - name: Test scanner
         run: |
-          npx pacdex | tee pacdex_output_mac.txt
+          npx pacdex --no-upload | tee pacdex_output_mac.txt
 
       - name: Upload Pacdex Output
         uses: actions/upload-artifact@v4
@@ -86,7 +86,7 @@ jobs:
         run: npm install .
       - name: Test scanner
         shell: pwsh
-        run: npx pacdex | Tee-Object -FilePath pacdex_output_windows.txt
+        run: npx pacdex --no-upload | Tee-Object -FilePath pacdex_output_windows.txt
       - name: Upload Pacdex Output
         uses: actions/upload-artifact@v4
         with:
