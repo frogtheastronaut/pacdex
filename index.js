@@ -5,6 +5,9 @@ import { scan_mac } from "./platforms/mac.js";
 import { scan_linux } from "./platforms/linux.js";
 import { scan_windows } from "./platforms/windows.js";
 import readline from "readline";
+import 'dotenv/config';
+
+const API_URL = process.env.PACDEX_API_URL || "http://localhost:3000/api/upload";
 
 function skip_upload() {
   return process.argv.includes("--no-upload");
@@ -47,7 +50,7 @@ function askUpload(info) {
 
 async function upload(data) {
   try {
-    const res = await fetch("http://localhost:3000/api/upload", {
+    const res = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
@@ -58,8 +61,14 @@ async function upload(data) {
     if (!res.ok) throw new Error(`upload failed: ${res.status}`);
     const json = await res.json();
     console.log("Uploaded data!", json);
+    if (API_URL === "http://localhost:3000/api/upload") {
+      console.log("Note: You are uploading to a local server.");
+    }
   } catch (err) {
     console.error("Upload error:", err.message);
+    if (API_URL === "http://localhost:3000/api/upload") {
+      console.log("Note: You are uploading to a local server.");
+    }
   }
 }
 
